@@ -46,7 +46,8 @@ export function addToCart() {
       document.querySelector('.js-cart-quantity').innerHTML = totalQuantity;
 
       localStorage.setItem('cart', JSON.stringify(cart));
-      console.log(cart);
+      
+      document.querySelector(`.js-added-message-${productId}`).classList.add('added-message-visible');
     });
   })
 }
