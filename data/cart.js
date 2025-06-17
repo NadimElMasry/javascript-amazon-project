@@ -3,7 +3,8 @@ const cart = JSON.parse(localStorage.getItem('cart')) || [];
 export function addToCart() {
   document.querySelectorAll('.js-add-to-cart-button').forEach((addButton) => {
     addButton.addEventListener('click', () => {
-      const productId = addButton.dataset.productId;
+      // const productId = addButton.dataset.productId;
+      const {productId} = addButton.dataset;
 
       const selectedQuantity = Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
 
