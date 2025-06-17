@@ -6,28 +6,13 @@ export function addToCart() {
       // const productId = addButton.dataset.productId;
       const {productId} = addButton.dataset;
 
+      // Gets value out of HTML dropdown selector
       const selectedQuantity = Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
 
+      // Uses .find() method to get matching IDs instead of looping
       /*
       const matchingItem = cart.find((cartItem) => {
         return cartItem.id === productId;
-      });
-
-      if (matchingItem) {
-        matchingItem.quantity += 1;
-      } else {
-        cart.push({
-          id: productId,
-          quantity: 1
-        });
-      }
-      */
-
-      let matchingItem;
-      cart.forEach((cartItem) => {
-        if (cartItem.id === productId) {
-          matchingItem = cartItem;
-        }
       });
 
       if (matchingItem) {
@@ -38,7 +23,27 @@ export function addToCart() {
           quantity: selectedQuantity
         });
       }
+      */
 
+      // Loops through cart to find matching IDs to accurately update quantity
+      let matchingItem;
+      cart.forEach((cartItem) => {
+        if (cartItem.id === productId) {
+          matchingItem = cartItem;
+        }
+      });
+
+      // Increments quantity or adds new item
+      if (matchingItem) {
+        matchingItem.quantity += selectedQuantity;
+      } else {
+        cart.push({
+          id: productId,
+          quantity: selectedQuantity
+        });
+      }
+
+      // Updates quantity displayed in homepage cart
       let totalQuantity = 0;
       cart.forEach((cartItem) => {
         totalQuantity += cartItem.quantity;
@@ -47,6 +52,7 @@ export function addToCart() {
 
       localStorage.setItem('cart', JSON.stringify(cart));
       
+      // Displays "Added" message upon clicking button
       document.querySelector(`.js-added-message-${productId}`).classList.add('added-message-visible');
     });
   })
