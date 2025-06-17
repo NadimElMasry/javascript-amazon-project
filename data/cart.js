@@ -36,6 +36,12 @@ export function addToCart() {
       }
       */
 
+      let totalQuantity = 0;
+      cart.forEach((cartItem) => {
+        totalQuantity += cartItem.quantity;
+      });
+      document.querySelector('.js-cart-quantity').innerHTML = totalQuantity;
+
       localStorage.setItem('cart', JSON.stringify(cart));
     });
   })
