@@ -1,5 +1,7 @@
 const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
+updateQuantityElement();
+
 export function addToCart() {
   document.querySelectorAll('.js-add-to-cart-button').forEach((addButton) => {
     addButton.addEventListener('click', () => {
@@ -36,8 +38,6 @@ export function addToCart() {
         }
       });
 
-
-      // Increments quantity or adds new item
       if (matchingItem) {
         matchingItem.quantity += selectedQuantity;
       } else {
@@ -48,17 +48,12 @@ export function addToCart() {
       }
 
 
-      // Updates quantity displayed in homepage cart
-      let totalQuantity = 0;
-      cart.forEach((cartItem) => {
-        totalQuantity += cartItem.quantity;
-      });
-      document.querySelector('.js-cart-quantity').innerHTML = totalQuantity;
+      updateQuantityElement();
 
 
       localStorage.setItem('cart', JSON.stringify(cart));
 
-      
+
       // Displays "Added" message upon clicking button
       const addedMessage = document.querySelector(`.js-added-message-${productId}`);
       addedMessage.classList.add('added-message-visible');
@@ -67,4 +62,12 @@ export function addToCart() {
       }, 2000);
     });
   })
+}
+
+function updateQuantityElement() {
+  let totalQuantity = 0;
+  cart.forEach((cartItem) => {
+    totalQuantity += cartItem.quantity;
+  });
+  document.querySelector('.js-cart-quantity').innerHTML = totalQuantity;
 }
