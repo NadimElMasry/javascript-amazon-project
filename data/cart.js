@@ -1,6 +1,9 @@
 export const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-updateQuantityElement();
+// Guards updateQuantityElement() call within module scope so that it only runs where DOM element exists
+if (document.querySelector('.js-cart-quantity')) {
+  updateQuantityElement();
+}
 
 export function addToCart() {
   document.querySelectorAll('.js-add-to-cart-button').forEach((addButton) => {
