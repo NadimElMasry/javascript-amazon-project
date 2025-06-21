@@ -5,10 +5,23 @@ import {formatCurrency} from './utils/money.js';
 function renderOrderSummary() {
   let orderSummaryHTML = '';
 
+  // Builds lookup object from an array of ID-product pairs (entries)
+  const productsById = Object.fromEntries(
+    products.map(p => [p.id, p])
+  );
+
   cart.forEach((cartItem) => {
-    // Nests products loop inside cart loop
+    // Gets matching item from lookup object created above instead of looping through products array
+    const product = productsById[cartItem.id];
+    const matchingItem = {
+      ...product,
+      quantity: cartItem.quantity
+    };
+
+
+    // Solution that nests products loop inside cart loop, carries O(nxm) penalty in larger data sets
     /*
-    let matchingItem; // Declared inside loop so that it resets each time and doesn't carry stale value from previous iteration in which cartItem.id and product.id did not match
+    let matchingItem; // Declared inside loop so that it resets each time and doesn't carry stale value from previous iteration whenever cartItem.id and product.id do not match
 
     products.forEach((product) => {
       if (cartItem.id === product.id) {
@@ -22,13 +35,16 @@ function renderOrderSummary() {
     });
     */
 
-    // Uses .find() method to get matching item instead of nesting loops
+
+    // Solution that uses .find() method to get matching item instead of nesting loops, still O(m) in the worst case
+    /*
     const product = products.find(p => p.id === cartItem.id);
     if (!product) return;
     const matchingItem = {
       ...product,
       quantity: cartItem.quantity
     };
+    */
 
     orderSummaryHTML += `
       <div class="cart-item-container">
