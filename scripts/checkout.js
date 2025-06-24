@@ -70,7 +70,7 @@ function renderOrderSummary() {
               <span class="update-quantity-link link-primary">
                 Update
               </span>
-              <span class="delete-quantity-link link-primary">
+              <span class="delete-quantity-link link-primary js-delete-from-cart-element" data-deleted-item-id="${matchingItem.id}">
                 Delete
               </span>
             </div>
@@ -126,6 +126,22 @@ function renderOrderSummary() {
   });
   
   document.querySelector('.js-order-summary').innerHTML = orderSummaryHTML;
+
+  document.querySelectorAll('.js-delete-from-cart-element')
+    .forEach(deleteElement => {
+      // const itemId = deleteElement.dataset.itemId;
+      const {deletedItemId} = deleteElement.dataset;
+
+      deleteElement.addEventListener('click', () => {
+        // Finds index of first item with matching IDs and remove it from cart array
+        const index = cart.findIndex(cartItem => cartItem.id === deletedItemId);
+        if (index !== -1) {          
+          cart.splice(index, 1);
+          renderOrderSummary();
+        }
+        console.log(cart);
+      });
+    });
 }
 
 renderOrderSummary();
