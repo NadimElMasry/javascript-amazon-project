@@ -1,4 +1,4 @@
-import {cart} from '../data/cart.js';
+import {cart, saveToStorage} from '../data/cart.js';
 import {products} from '../data/products.js';
 import {formatCurrency} from './utils/money.js';
 
@@ -137,9 +137,9 @@ function renderOrderSummary() {
         const index = cart.findIndex(cartItem => cartItem.id === deletedItemId);
         if (index !== -1) {          
           cart.splice(index, 1);
+          saveToStorage();
           renderOrderSummary();
         }
-        console.log(cart);
       });
     });
 }

@@ -54,7 +54,7 @@ export function addToCart() {
       updateQuantityElement();
 
 
-      localStorage.setItem('cart', JSON.stringify(cart));
+      saveToStorage();
 
 
       // Displays "Added" message upon clicking button
@@ -73,4 +73,8 @@ function updateQuantityElement() {
     totalQuantity += cartItem.quantity;
   });
   document.querySelector('.js-cart-quantity').innerHTML = totalQuantity;
+}
+
+export function saveToStorage() {
+  localStorage.setItem('cart', JSON.stringify(cart));
 }
