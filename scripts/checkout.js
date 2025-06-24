@@ -127,6 +127,10 @@ function renderOrderSummary() {
   
   document.querySelector('.js-order-summary').innerHTML = orderSummaryHTML;
 
+  deleteFromCart();
+}
+
+function deleteFromCart() {
   document.querySelectorAll('.js-delete-from-cart-element')
     .forEach(deleteElement => {
       // const itemId = deleteElement.dataset.itemId;
