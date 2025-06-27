@@ -1,9 +1,6 @@
 export const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-// Guards updateQuantityElement() call within module scope so that it only runs where DOM element exists
-if (document.querySelector('.js-cart-quantity')) {
-  updateQuantityElement();
-}
+updateQuantityElement();
 
 export function addToCart() {
   document.querySelectorAll('.js-add-to-cart-button').forEach((addButton) => {
@@ -68,11 +65,16 @@ export function addToCart() {
 }
 
 function updateQuantityElement() {
+  const quantityElement = document.querySelector('.js-cart-quantity');
+  
+  // Guards updateQuantityElement() call within module scope so that it only runs where DOM element exists
+  if (!quantityElement) return;
+  
   let totalQuantity = 0;
   cart.forEach((cartItem) => {
     totalQuantity += cartItem.quantity;
   });
-  document.querySelector('.js-cart-quantity').innerHTML = totalQuantity;
+  quantityElement.innerHTML = totalQuantity;
 }
 
 export function saveToStorage() {
