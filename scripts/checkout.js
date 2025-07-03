@@ -1,4 +1,4 @@
-import {cart, saveToStorage} from '../data/cart.js';
+import {cart, deleteFromCart} from '../data/cart.js';
 import {products} from '../data/products.js';
 import {formatCurrency} from './utils/money.js';
 
@@ -70,7 +70,7 @@ function renderOrderSummary() {
               <span class="update-quantity-link link-primary">
                 Update
               </span>
-              <span class="delete-quantity-link link-primary js-delete-from-cart-element" data-deleted-item-id="${matchingItem.id}">
+              <span class="delete-quantity-link link-primary js-delete-element" data-deleted-item-id="${matchingItem.id}">
                 Delete
               </span>
             </div>
@@ -127,25 +127,8 @@ function renderOrderSummary() {
   
   document.querySelector('.js-order-summary').innerHTML = orderSummaryHTML;
 
-  deleteFromCart();
-}
-
-function deleteFromCart() {
-  document.querySelectorAll('.js-delete-from-cart-element')
-    .forEach(deleteElement => {
-      // const itemId = deleteElement.dataset.itemId;
-      const {deletedItemId} = deleteElement.dataset;
-
-      deleteElement.addEventListener('click', () => {
-        // Finds index of first item with matching IDs and remove it from cart array
-        const index = cart.findIndex(cartItem => cartItem.id === deletedItemId);
-        if (index !== -1) {          
-          cart.splice(index, 1);
-          saveToStorage();
-          renderOrderSummary();
-        }
-      });
-    });
+  // Hooks the function renderOrderSummary() into deleteFromCart() 
+  deleteFromCart(renderOrderSummary);
 }
 
 renderOrderSummary();
