@@ -1,11 +1,8 @@
 export const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-updateQuantityElement();
-
 export function addToCart() {
   document.querySelectorAll('.js-add-to-cart-button').forEach((addButton) => {
     addButton.addEventListener('click', () => {
-      // const productId = addButton.dataset.productId;
       const {productId} = addButton.dataset;
 
 
@@ -64,8 +61,8 @@ export function addToCart() {
   })
 }
 
-function updateQuantityElement() {
-  const quantityElement = document.querySelector('.js-cart-quantity');
+export function updateQuantityElement() {
+  const quantityElement = document.querySelector('.js-cart-total-quantity');
   
   // Guards updateQuantityElement() call within module scope so that it only runs where DOM element exists
   if (!quantityElement) return;
@@ -87,7 +84,6 @@ export function deleteFromCart(onDeleteCallback, elementClass = '.js-delete-elem
   if (deleteElements.length === 0) return;
   
   deleteElements.forEach(deleteElement => {
-    // const itemId = deleteElement.dataset.itemId;
     const {deletedItemId} = deleteElement.dataset;
 
     deleteElement.addEventListener('click', () => {
