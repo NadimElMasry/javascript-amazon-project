@@ -1,4 +1,4 @@
-import {cart, deleteFromCart} from '../data/cart.js';
+import {cart, deleteFromCart, updateQuantityElement} from '../data/cart.js';
 import {products} from '../data/products.js';
 import {formatCurrency} from './utils/money.js';
 
@@ -132,3 +132,5 @@ function renderOrderSummary() {
 }
 
 renderOrderSummary();
+
+updateQuantityElement();

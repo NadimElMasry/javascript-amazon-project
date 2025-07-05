@@ -61,17 +61,26 @@ export function addToCart() {
   })
 }
 
-export function updateQuantityElement() {
-  const quantityElement = document.querySelector('.js-cart-total-quantity');
+export function updateQuantityElement(selector = '.js-cart-total-quantity') {
+  const elements = document.querySelectorAll(selector);
   
-  // Guards updateQuantityElement() call within module scope so that it only runs where DOM element exists
-  if (!quantityElement) return;
+  if (elements.length === 0) return;
   
   let totalQuantity = 0;
   cart.forEach((cartItem) => {
     totalQuantity += cartItem.quantity;
   });
-  quantityElement.innerHTML = totalQuantity;
+
+  elements.forEach((quantityElement) => {
+    const {format} = quantityElement.dataset;
+
+    // Updates quantity DOM element according to data attribute
+    if (format === 'item-count') {
+      quantityElement.innerHTML = `${totalQuantity} item${totalQuantity === 1 ? '' : 's'}`;
+    } else {
+      quantityElement.innerHTML = totalQuantity;
+    }
+  });
 }
 
 function saveToStorage() {
@@ -98,6 +107,8 @@ export function deleteFromCart(onDeleteCallback, elementClass = '.js-delete-elem
           onDeleteCallback();
         }
       }
+
+      updateQuantityElement();
     });
   });
 }
