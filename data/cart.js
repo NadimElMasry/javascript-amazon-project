@@ -1,6 +1,8 @@
 export const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 export function modifyCart(productId, selectedQuantity) {
+  if (!Number.isFinite(selectedQuantity) || selectedQuantity <= 0) return;
+
   // Loops through cart to find matching IDs to accurately update quantity
   let matchingItem;
   cart.forEach((cartItem) => {
@@ -90,6 +92,8 @@ export function deleteFromCart(onDeleteCallback, elementClass = '.js-delete-elem
 }
 
 export function updateCartQuantity(itemId, updatedQuantity) {
+  if (!Number.isFinite(updatedQuantity) || updatedQuantity <= 0) return;
+
   const matchingItem = cart.find(cartItem => cartItem.id === itemId);
 
   if (matchingItem) {
