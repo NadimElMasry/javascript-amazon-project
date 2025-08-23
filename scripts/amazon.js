@@ -1,5 +1,5 @@
 import {products} from '../data/products.js';
-import {addToCart, updateHeaderQuantity} from '../data/cart.js';
+import {modifyCart, updateHeaderQuantity} from '../data/cart.js';
 import {formatCurrency} from './utils/money.js';
 
 function renderProductsGrid() {
@@ -60,6 +60,31 @@ function renderProductsGrid() {
   });
 
   document.querySelector('.js-products-grid').innerHTML = productsGridHTML;
+}
+
+function addToCart() {  
+  document.querySelectorAll('.js-add-to-cart-button').forEach((addButton) => {
+    addButton.addEventListener('click', () => {
+      const {productId} = addButton.dataset;
+
+      // Gets value out of HTML dropdown selector
+      const selectedQuantity = Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
+
+      modifyCart(productId, selectedQuantity);
+
+      updateHeaderQuantity();
+      
+      displayAddedMessage(productId);
+    });
+  })
+}
+
+function displayAddedMessage(productId) {
+  const addedMessage = document.querySelector(`.js-added-message-${productId}`);
+  addedMessage.classList.add('added-message-visible');
+  setTimeout(() => {
+    addedMessage.classList.remove('added-message-visible');
+  }, 2000);
 }
 
 renderProductsGrid();
