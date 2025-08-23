@@ -209,3 +209,9 @@
   margin-top: 11px;
   margin-bottom: 15px;
 }
+
+.quantity-selector {
+  background-color: white;
+  padding: 1px;
+  margin-right: 4px;
+}

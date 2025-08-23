@@ -5,10 +5,8 @@ export function addToCart() {
     addButton.addEventListener('click', () => {
       const {productId} = addButton.dataset;
 
-
       // Gets value out of HTML dropdown selector
       const selectedQuantity = Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
-
 
       // Uses .find() method to get matching item instead of looping
       /*
@@ -25,7 +23,6 @@ export function addToCart() {
         });
       }
       */
-
 
       // Loops through cart to find matching IDs to accurately update quantity
       let matchingItem;
@@ -44,12 +41,9 @@ export function addToCart() {
         });
       }
 
-
       updateQuantityElement();
 
-
       saveToStorage();
-
 
       // Displays "Added" message upon clicking button
       const addedMessage = document.querySelector(`.js-added-message-${productId}`);
@@ -83,7 +77,7 @@ export function updateQuantityElement(selector = '.js-cart-total-quantity') {
   });
 }
 
-function saveToStorage() {
+export function saveToStorage() {
   localStorage.setItem('cart', JSON.stringify(cart));
 }
 

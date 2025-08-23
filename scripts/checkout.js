@@ -1,4 +1,4 @@
-import {cart, deleteFromCart, updateQuantityElement} from '../data/cart.js';
+import {cart, saveToStorage, deleteFromCart, updateQuantityElement} from '../data/cart.js';
 import {products} from '../data/products.js';
 import {formatCurrency} from './utils/money.js';
 
@@ -18,7 +18,6 @@ function renderOrderSummary() {
       quantity: cartItem.quantity
     };
 
-
     // Solution that nests products loop inside cart loop, carries O(nxm) penalty in larger data sets
     /*
     let matchingItem; // Declared inside loop so that it resets each time and doesn't carry stale value from previous iteration whenever cartItem.id and product.id do not match
@@ -34,7 +33,6 @@ function renderOrderSummary() {
       }
     });
     */
-
 
     // Solution that uses .find() method to get matching item instead of nesting loops, still O(m) in the worst case
     /*
@@ -67,10 +65,24 @@ function renderOrderSummary() {
               <span>
                 Quantity: <span class="quantity-label">${matchingItem.quantity}</span>
               </span>
-              <span class="update-quantity-link link-primary">
+              <span class="update-quantity-link link-primary js-update-element" 
+              data-updated-item-id="${matchingItem.id}">
                 Update
               </span>
-              <span class="delete-quantity-link link-primary js-delete-element" data-deleted-item-id="${matchingItem.id}">
+              <select class="quantity-selector js-update-quantity-selector-${matchingItem.id}">
+                <option value="1" ${matchingItem.quantity === 1 ? 'selected' : ''}>1</option>
+                <option value="2" ${matchingItem.quantity === 2 ? 'selected' : ''}>2</option>
+                <option value="3" ${matchingItem.quantity === 3 ? 'selected' : ''}>3</option>
+                <option value="4" ${matchingItem.quantity === 4 ? 'selected' : ''}>4</option>
+                <option value="5" ${matchingItem.quantity === 5 ? 'selected' : ''}>5</option>
+                <option value="6" ${matchingItem.quantity === 6 ? 'selected' : ''}>6</option>
+                <option value="7" ${matchingItem.quantity === 7 ? 'selected' : ''}>7</option>
+                <option value="8" ${matchingItem.quantity === 8 ? 'selected' : ''}>8</option>
+                <option value="9" ${matchingItem.quantity === 9 ? 'selected' : ''}>9</option>
+                <option value="10" ${matchingItem.quantity === 10 ? 'selected' : ''}>10</option>
+              </select>
+              <span class="delete-quantity-link link-primary js-delete-element" 
+              data-deleted-item-id="${matchingItem.id}">
                 Delete
               </span>
             </div>
@@ -127,8 +139,36 @@ function renderOrderSummary() {
   
   document.querySelector('.js-order-summary').innerHTML = orderSummaryHTML;
 
-  // Hooks the function renderOrderSummary() into deleteFromCart() 
+  // Hooks the function renderOrderSummary() into deleteFromCart() and updateCartQuantity() 
   deleteFromCart(renderOrderSummary);
+  updateCartQuantity(renderOrderSummary);
+}
+
+function updateCartQuantity(OnUpdateCallback, elementClass = '.js-update-element') {
+  const updateElements = document.querySelectorAll(elementClass);
+
+  if (updateElements.length === 0) return;
+
+  updateElements.forEach((updateElement) => {
+    const {updatedItemId} = updateElement.dataset;
+    
+    updateElement.addEventListener('click', () => {
+      const selectedUpdateQuantity = Number(document.querySelector(`.js-update-quantity-selector-${updatedItemId}`).value);
+
+      const matchingItem = cart.find(cartItem => cartItem.id === updatedItemId);
+
+      if (matchingItem) {
+        matchingItem.quantity = selectedUpdateQuantity;
+
+        if (typeof OnUpdateCallback === 'function') {
+          OnUpdateCallback();
+        }
+      }
+
+      saveToStorage();
+      updateQuantityElement();
+    });
+  });
 }
 
 renderOrderSummary();
