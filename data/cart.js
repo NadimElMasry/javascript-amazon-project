@@ -41,7 +41,7 @@ export function addToCart() {
         });
       }
 
-      updateQuantityElement();
+      updateHeaderQuantity();
 
       saveToStorage();
 
@@ -55,7 +55,7 @@ export function addToCart() {
   })
 }
 
-export function updateQuantityElement(selector = '.js-cart-total-quantity') {
+export function updateHeaderQuantity(selector = '.js-cart-total-quantity') {
   const elements = document.querySelectorAll(selector);
   
   if (elements.length === 0) return;
@@ -101,7 +101,7 @@ export function deleteFromCart(onDeleteCallback, elementClass = '.js-delete-elem
           onDeleteCallback();
         }
 
-        updateQuantityElement();
+        updateHeaderQuantity();
       }      
     });
   });
