@@ -1,4 +1,4 @@
-import {cart, saveToStorage, deleteFromCart, updateQuantityElement} from '../data/cart.js';
+import {cart, deleteFromCart, updateCartQuantity, updateQuantityElement} from '../data/cart.js';
 import {products} from '../data/products.js';
 import {formatCurrency} from './utils/money.js';
 
@@ -141,11 +141,11 @@ function renderOrderSummary() {
 
   // Hooks the function renderOrderSummary() into deleteFromCart() and updateCartQuantity() 
   deleteFromCart(renderOrderSummary);
-  updateCartQuantity(renderOrderSummary);
+  renderUpdatedCart(renderOrderSummary);
 }
 
-function updateCartQuantity(OnUpdateCallback, elementClass = '.js-update-element') {
-  const updateElements = document.querySelectorAll(elementClass);
+function renderUpdatedCart(OnUpdateCallback) {
+  const updateElements = document.querySelectorAll('.js-update-element');
 
   if (updateElements.length === 0) return;
 
@@ -155,17 +155,12 @@ function updateCartQuantity(OnUpdateCallback, elementClass = '.js-update-element
     updateElement.addEventListener('click', () => {
       const selectedUpdateQuantity = Number(document.querySelector(`.js-update-quantity-selector-${updatedItemId}`).value);
 
-      const matchingItem = cart.find(cartItem => cartItem.id === updatedItemId);
+      updateCartQuantity(updatedItemId, selectedUpdateQuantity);
 
-      if (matchingItem) {
-        matchingItem.quantity = selectedUpdateQuantity;
-
-        if (typeof OnUpdateCallback === 'function') {
-          OnUpdateCallback();
-        }
+      if (typeof OnUpdateCallback === 'function') {
+        OnUpdateCallback();
       }
 
-      saveToStorage();
       updateQuantityElement();
     });
   });

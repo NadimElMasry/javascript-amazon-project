@@ -77,7 +77,7 @@ export function updateQuantityElement(selector = '.js-cart-total-quantity') {
   });
 }
 
-export function saveToStorage() {
+function saveToStorage() {
   localStorage.setItem('cart', JSON.stringify(cart));
 }
 
@@ -100,9 +100,18 @@ export function deleteFromCart(onDeleteCallback, elementClass = '.js-delete-elem
         if (typeof onDeleteCallback === 'function') {
           onDeleteCallback();
         }
-      }
 
-      updateQuantityElement();
+        updateQuantityElement();
+      }      
     });
   });
+}
+
+export function updateCartQuantity(itemId, updatedQuantity) {
+  const matchingItem = cart.find(cartItem => cartItem.id === itemId);
+
+  if (matchingItem) {
+    matchingItem.quantity = updatedQuantity;
+    saveToStorage();
+  }
 }
