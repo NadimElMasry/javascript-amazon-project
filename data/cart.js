@@ -39,26 +39,12 @@ export function modifyCart(productId, selectedQuantity) {
   */
 }
 
-export function updateHeaderQuantity(selector = '.js-cart-total-quantity') {
-  const elements = document.querySelectorAll(selector);
-  
-  if (elements.length === 0) return;
-  
+export function calculateCartQuantity() {
   let totalQuantity = 0;
   cart.forEach((cartItem) => {
     totalQuantity += cartItem.quantity;
   });
-
-  elements.forEach((quantityElement) => {
-    const {format} = quantityElement.dataset;
-
-    // Updates quantity DOM element according to data attribute
-    if (format === 'item-count') {
-      quantityElement.innerHTML = `${totalQuantity} item${totalQuantity === 1 ? '' : 's'}`;
-    } else {
-      quantityElement.innerHTML = totalQuantity;
-    }
-  });
+  return totalQuantity;
 }
 
 function saveToStorage() {

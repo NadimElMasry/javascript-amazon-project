@@ -1,6 +1,7 @@
-import {cart, deleteFromCart, updateCartQuantity, updateHeaderQuantity} from '../data/cart.js';
+import {cart, deleteFromCart, updateCartQuantity} from '../data/cart.js';
 import {products} from '../data/products.js';
 import {formatCurrency} from './utils/money.js';
+import {updateHeaderQuantity} from './ui/header.js';
 
 function renderOrderSummary() {
   let orderSummaryHTML = '';

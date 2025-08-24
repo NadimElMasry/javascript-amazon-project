@@ -1,6 +1,7 @@
 import {products} from '../data/products.js';
-import {modifyCart, updateHeaderQuantity} from '../data/cart.js';
+import {modifyCart} from '../data/cart.js';
 import {formatCurrency} from './utils/money.js';
+import {updateHeaderQuantity} from './ui/header.js';
 
 function renderProductsGrid() {
   let productsGridHTML = '';
