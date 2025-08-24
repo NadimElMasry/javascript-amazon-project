@@ -65,30 +65,13 @@ function saveToStorage() {
   localStorage.setItem('cart', JSON.stringify(cart));
 }
 
-export function deleteFromCart(onDeleteCallback, elementClass = '.js-delete-element') {
-  const deleteElements = document.querySelectorAll(elementClass);
-  
-  if (deleteElements.length === 0) return;
-  
-  deleteElements.forEach(deleteElement => {
-    const {deletedItemId} = deleteElement.dataset;
-
-    deleteElement.addEventListener('click', () => {
-      // Finds index of first item with matching IDs and remove it from cart array
-      const index = cart.findIndex(cartItem => cartItem.id === deletedItemId);
-      if (index !== -1) {          
-        cart.splice(index, 1);
-        saveToStorage();
-
-        // Hooked callback that lets us avoid having to import the renderOrderSummary() function from checkout.js (the rendering layer) into cart.js (the data layer), thus reducing dependency of the cart.js data logic on the DOM-related code from checkout.js and maintaining cleaner separation of concerns between logic and presentation
-        if (typeof onDeleteCallback === 'function') {
-          onDeleteCallback();
-        }
-
-        updateHeaderQuantity();
-      }      
-    });
-  });
+export function deleteFromCart(itemId) {
+  // Finds index of first item with matching IDs and remove it from cart array
+  const index = cart.findIndex(cartItem => cartItem.id === itemId);
+  if (index !== -1) {          
+    cart.splice(index, 1);
+    saveToStorage();    
+  } 
 }
 
 export function updateCartQuantity(itemId, updatedQuantity) {

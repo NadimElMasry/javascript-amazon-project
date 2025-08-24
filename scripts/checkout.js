@@ -140,11 +140,32 @@ function renderOrderSummary() {
   document.querySelector('.js-order-summary').innerHTML = orderSummaryHTML;
 
   // Hooks the function renderOrderSummary() into deleteFromCart() and updateCartQuantity() 
-  deleteFromCart(renderOrderSummary);
+  renderCartDeletion(renderOrderSummary);
   renderUpdatedCart(renderOrderSummary);
 }
 
-function renderUpdatedCart(OnUpdateCallback) {
+function renderCartDeletion(onDeleteCallback) {
+  const deleteElements = document.querySelectorAll('.js-delete-element');
+    
+  if (deleteElements.length === 0) return;
+  
+  deleteElements.forEach(deleteElement => {
+    const {deletedItemId} = deleteElement.dataset;
+
+    deleteElement.addEventListener('click', () => {
+      deleteFromCart(deletedItemId);
+      
+      // Hooked callback that lets us avoid having to import the renderOrderSummary() function from checkout.js (the rendering layer) into cart.js (the data layer), thus reducing dependency of the cart.js data logic on the DOM-related code from checkout.js and maintaining cleaner separation of concerns between logic and presentation
+      if (typeof onDeleteCallback === 'function') {
+        onDeleteCallback();
+      }
+
+      updateHeaderQuantity();
+    });
+  });
+}
+
+function renderUpdatedCart(onUpdateCallback) {
   const updateElements = document.querySelectorAll('.js-update-element');
 
   if (updateElements.length === 0) return;
@@ -157,8 +178,8 @@ function renderUpdatedCart(OnUpdateCallback) {
 
       updateCartQuantity(updatedItemId, selectedUpdateQuantity);
 
-      if (typeof OnUpdateCallback === 'function') {
-        OnUpdateCallback();
+      if (typeof onUpdateCallback === 'function') {
+        onUpdateCallback();
       }
 
       updateHeaderQuantity();
