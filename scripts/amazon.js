@@ -30,7 +30,7 @@ function renderProductsGrid() {
         </div>
 
         <div class="product-quantity-container">
-          <select class="js-quantity-selector-${product.id}">
+          <select class="js-quantity-selector" data-product-id="${product.id}">
             <option selected value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -69,7 +69,8 @@ function addToCart() {
       const {productId} = addButton.dataset;
 
       // Gets value out of HTML dropdown selector
-      const selectedQuantity = Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
+      // The `.class-name[data=value]` syntax acts like an AND operator, which in this case guards against the possibility of a product ID containing invalid characters, since CSS class selectors are case sensitive and invalid characters (e.g. spaces) might break the CSS class name, so in this case we are keeping the product ID in a separate data attribute instead of in the class name; and since we wish to select the quantity for one product in particular, the product ID in the data attribute adds an extra condition to make sure that both the class name ('.js-quantity-selector') and the data attribute (now with product ID as a value) are both present at the same time
+      const selectedQuantity = Number(document.querySelector(`.js-quantity-selector[data-product-id="${productId}"]`).value);
 
       modifyCart(productId, selectedQuantity);
 
