@@ -116,7 +116,7 @@
 }
 
 .product-quantity .link-primary {
-  margin-left: 3px;
+  margin-left: 6px;
 }
 
 @media (max-width: 1000px) {
@@ -210,8 +210,27 @@
   margin-bottom: 15px;
 }
 
-.quantity-selector {
+.product-quantity {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 30px;
+}
+
+.update-quantity-selector {
+  display: none;
   background-color: white;
   padding: 1px;
-  margin-right: 4px;
+  margin-left: 6px;
+}
+
+.save-update-button, .cancel-update-button {
+  display: none;
+  color: rgb(1, 124, 182);
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.save-update-button:hover, .cancel-update-button:hover {
+  color: rgb(196, 80, 0);
 }

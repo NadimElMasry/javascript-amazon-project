@@ -70,7 +70,7 @@ function renderOrderSummary() {
               data-updated-item-id="${matchingItem.id}">
                 Update
               </span>
-              <select class="quantity-selector js-update-quantity-selector-${matchingItem.id}">
+              <select class="update-quantity-selector js-update-quantity-selector-${matchingItem.id}">
                 <option value="1" ${matchingItem.quantity === 1 ? 'selected' : ''}>1</option>
                 <option value="2" ${matchingItem.quantity === 2 ? 'selected' : ''}>2</option>
                 <option value="3" ${matchingItem.quantity === 3 ? 'selected' : ''}>3</option>
@@ -82,6 +82,12 @@ function renderOrderSummary() {
                 <option value="9" ${matchingItem.quantity === 9 ? 'selected' : ''}>9</option>
                 <option value="10" ${matchingItem.quantity === 10 ? 'selected' : ''}>10</option>
               </select>
+              <span class="save-update-button js-save-update-quantity-${matchingItem.id}">
+                Save
+              </span>
+              <span class="cancel-update-button js-cancel-update-quantity-${matchingItem.id}">
+                Cancel
+              </span>
               <span class="delete-quantity-link link-primary js-delete-element" 
               data-deleted-item-id="${matchingItem.id}">
                 Delete
@@ -140,7 +146,7 @@ function renderOrderSummary() {
   
   document.querySelector('.js-order-summary').innerHTML = orderSummaryHTML;
 
-  // Hooks the function renderOrderSummary() into deleteFromCart() and updateCartQuantity() 
+  // Hooks the function renderOrderSummary() into renderCartDeletion() and renderUpdatedCart() 
   renderCartDeletion(renderOrderSummary);
   renderUpdatedCart(renderOrderSummary);
 }
@@ -156,7 +162,6 @@ function renderCartDeletion(onDeleteCallback) {
     deleteElement.addEventListener('click', () => {
       deleteFromCart(deletedItemId);
       
-      // Hooked callback that lets us avoid having to import the renderOrderSummary() function from checkout.js (the rendering layer) into cart.js (the data layer), thus reducing dependency of the cart.js data logic on the DOM-related code from checkout.js and maintaining cleaner separation of concerns between logic and presentation
       if (typeof onDeleteCallback === 'function') {
         onDeleteCallback();
       }
@@ -175,15 +180,45 @@ function renderUpdatedCart(onUpdateCallback) {
     const {updatedItemId} = updateElement.dataset;
     
     updateElement.addEventListener('click', () => {
-      const selectedUpdateQuantity = Number(document.querySelector(`.js-update-quantity-selector-${updatedItemId}`).value);
+      const quantitySelector = document.querySelector(`.js-update-quantity-selector-${updatedItemId}`);
+      quantitySelector.style.display = 'inline-block';
 
-      updateCartQuantity(updatedItemId, selectedUpdateQuantity);
+      const saveElement = document.querySelector(`.js-save-update-quantity-${updatedItemId}`);
+      saveElement.style.display = 'inline-block';
 
-      if (typeof onUpdateCallback === 'function') {
-        onUpdateCallback();
-      }
+      const cancelElement = document.querySelector(`.js-cancel-update-quantity-${updatedItemId}`);
+      cancelElement.style.display = 'inline-block';
 
-      updateHeaderQuantity();
+      const deleteElement = document.querySelector(`.js-delete-element[data-deleted-item-id="${updatedItemId}"]`);
+      deleteElement.style.display = 'none';
+
+      updateElement.style.display = 'none';
+
+      saveElement.addEventListener('click', () => {
+        const selectedUpdateQuantity = Number(quantitySelector.value);
+
+        updateCartQuantity(updatedItemId, selectedUpdateQuantity);
+
+        if (typeof onUpdateCallback === 'function') {
+          onUpdateCallback();
+        }
+
+        updateHeaderQuantity();
+
+        updateElement.style.display = 'inline-block';
+        deleteElement.style.display = 'inline-block';
+        quantitySelector.style.display = 'none';
+        saveElement.style.display = 'none';
+        cancelElement.style.display = 'none';
+      });
+
+      cancelElement.addEventListener('click', () => {
+        updateElement.style.display = 'inline-block';
+        deleteElement.style.display = 'inline-block';
+        quantitySelector.style.display = 'none';
+        saveElement.style.display = 'none';
+        cancelElement.style.display = 'none';
+      });
     });
   });
 }
