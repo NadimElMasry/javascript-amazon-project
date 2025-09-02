@@ -181,18 +181,27 @@ function renderUpdatedCart(onUpdateCallback) {
     
     updateElement.addEventListener('click', () => {
       const quantitySelector = document.querySelector(`.js-update-quantity-selector-${updatedItemId}`);
-      quantitySelector.style.display = 'inline-block';
-
       const saveElement = document.querySelector(`.js-save-update-quantity-${updatedItemId}`);
-      saveElement.style.display = 'inline-block';
-
       const cancelElement = document.querySelector(`.js-cancel-update-quantity-${updatedItemId}`);
-      cancelElement.style.display = 'inline-block';
-
       const deleteElement = document.querySelector(`.js-delete-element[data-deleted-item-id="${updatedItemId}"]`);
-      deleteElement.style.display = 'none';
 
-      updateElement.style.display = 'none';
+      toggleButtonsDisplayed(true);
+
+      function toggleButtonsDisplayed(isEditing = false) {
+        if (isEditing === true) {
+          quantitySelector.style.display = 'inline-block';
+          saveElement.style.display = 'inline-block';
+          cancelElement.style.display = 'inline-block';
+          deleteElement.style.display = 'none';
+          updateElement.style.display = 'none';
+        } else {
+          updateElement.style.display = 'inline-block';
+          deleteElement.style.display = 'inline-block';
+          quantitySelector.style.display = 'none';
+          saveElement.style.display = 'none';
+          cancelElement.style.display = 'none';
+        }
+      }
 
       saveElement.addEventListener('click', () => {
         const selectedUpdateQuantity = Number(quantitySelector.value);
@@ -205,19 +214,11 @@ function renderUpdatedCart(onUpdateCallback) {
 
         updateHeaderQuantity();
 
-        updateElement.style.display = 'inline-block';
-        deleteElement.style.display = 'inline-block';
-        quantitySelector.style.display = 'none';
-        saveElement.style.display = 'none';
-        cancelElement.style.display = 'none';
+        toggleButtonsDisplayed();
       });
 
       cancelElement.addEventListener('click', () => {
-        updateElement.style.display = 'inline-block';
-        deleteElement.style.display = 'inline-block';
-        quantitySelector.style.display = 'none';
-        saveElement.style.display = 'none';
-        cancelElement.style.display = 'none';
+        toggleButtonsDisplayed();
       });
     });
   });
