@@ -1,4 +1,4 @@
-import {cart, deleteFromCart, updateCartQuantity} from '../data/cart.js';
+import {cart, deleteFromCart, updateCartQuantity, updateDeliveryOption} from '../data/cart.js';
 import {products} from '../data/products.js';
 import {deliveryOptions} from '../data/deliveryOptions.js';
 import {formatCurrency} from './utils/money.js';
@@ -118,6 +118,7 @@ function renderOrderSummary() {
   // Hooks the function renderOrderSummary() into renderCartDeletion() and renderUpdatedCart() 
   renderCartDeletion(renderOrderSummary);
   renderUpdatedCart(renderOrderSummary);
+  chooseDeliveryOption(renderOrderSummary);
 }
 
 function deliveryOptionsHTML(matchingItem, cartItem) {
@@ -138,7 +139,8 @@ function deliveryOptionsHTML(matchingItem, cartItem) {
       <div class="delivery-option">
         <input type="radio"
           ${isChecked ? 'checked' : ''}
-          class="delivery-option-input"
+          class="delivery-option-input js-delivery-option-${cartItem.id}"
+          data-delivery-option-id="${deliveryOption.id}"
           name="delivery-option-${matchingItem.id}">
         <div>
           <div class="delivery-option-date">
@@ -153,6 +155,24 @@ function deliveryOptionsHTML(matchingItem, cartItem) {
   });
 
   return html;
+}
+
+function chooseDeliveryOption(onChoosingCallback) {
+  cart.forEach((cartItem) => {
+    deliveryOptions.forEach((deliveryOption) => {
+      const radioElement = document.querySelector(`.js-delivery-option-${cartItem.id}[data-delivery-option-id="${deliveryOption.id}"]`);
+
+      radioElement.addEventListener('click', () => {
+        const {deliveryOptionId} = radioElement.dataset;
+
+        updateDeliveryOption(cartItem.id, deliveryOptionId);
+
+        if (typeof onChoosingCallback === 'function') {
+          onChoosingCallback();
+        }
+      });
+    });
+  });  
 }
 
 function renderCartDeletion(onDeleteCallback) {
