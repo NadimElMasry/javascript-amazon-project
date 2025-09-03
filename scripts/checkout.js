@@ -159,10 +159,12 @@ function deliveryOptionsHTML(matchingItem, cartItem) {
 
 function chooseDeliveryOption(onChoosingCallback) {
   cart.forEach((cartItem) => {
-    deliveryOptions.forEach((deliveryOption) => {
-      const radioElement = document.querySelector(`.js-delivery-option-${cartItem.id}[data-delivery-option-id="${deliveryOption.id}"]`);
+    const radioElements = document.querySelectorAll(`.js-delivery-option-${cartItem.id}`);
 
-      radioElement.addEventListener('click', () => {
+    if (!radioElements || radioElements.length === 0) return;
+
+    radioElements.forEach((radioElement) => {
+      radioElement.addEventListener('change', () => {
         const {deliveryOptionId} = radioElement.dataset;
 
         updateDeliveryOption(cartItem.id, deliveryOptionId);
