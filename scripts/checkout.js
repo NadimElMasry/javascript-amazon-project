@@ -1,4 +1,4 @@
-import {cart, deleteFromCart, updateCartQuantity, updateDeliveryOption} from '../data/cart.js';
+import {cart, deleteFromCart, updateCartQuantity, updateDeliveryOption, calculateCartQuantity} from '../data/cart.js';
 import {products} from '../data/products.js';
 import {deliveryOptions} from '../data/deliveryOptions.js';
 import {formatCurrency} from './utils/money.js';
@@ -119,6 +119,103 @@ function renderOrderSummary() {
   renderCartDeletion(renderOrderSummary);
   renderUpdatedCart(renderOrderSummary);
   chooseDeliveryOption(renderOrderSummary);
+}
+
+function renderPaymentSummary() {
+  let paymentSummaryHTML = `
+    <div class="payment-summary-title">
+      Order Summary
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Items (0):</div>
+      <div class="payment-summary-money">$0.00</div>
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Shipping &amp; handling:</div>
+      <div class="payment-summary-money">$0.00</div>
+    </div>
+
+    <div class="payment-summary-row subtotal-row">
+      <div>Total before tax:</div>
+      <div class="payment-summary-money">$0.00</div>
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Estimated tax (10%):</div>
+      <div class="payment-summary-money">$0.00</div>
+    </div>
+
+    <div class="payment-summary-row total-row">
+      <div>Order total:</div>
+      <div class="payment-summary-money">$0.00</div>
+    </div>
+
+    <button class="place-order-button button-primary">
+      Place your order
+    </button>
+  `;
+
+  const itemQuantity = calculateCartQuantity();
+
+  let totalPriceMinusShipping = 0;
+  let totalShippingPrice = 0;
+  let totalBeforeTax = 0;
+  let tax = 0;
+  let totalAfterTax = 0;
+
+  cart.forEach((cartItem) => {
+    const matchingProduct = products.find(product => cartItem.id === product.id);
+    const matchingOption = deliveryOptions.find(option => cartItem.deliveryOptionId === option.id);
+
+    totalPriceMinusShipping += cartItem.quantity * matchingProduct.priceCents;
+    totalShippingPrice += matchingOption.priceCents;
+    totalBeforeTax = totalPriceMinusShipping + totalShippingPrice;
+    tax = totalBeforeTax * 0.1;
+    totalAfterTax = totalBeforeTax + tax;    
+  });
+
+  paymentSummaryHTML = `
+    <div class="payment-summary-title">
+      Order Summary
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Items (${itemQuantity}):</div>
+      <div class="payment-summary-money">$${formatCurrency(totalPriceMinusShipping)}</div>
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Shipping &amp; handling:</div>
+      <div class="payment-summary-money">$${formatCurrency(totalShippingPrice)}</div>
+    </div>
+
+    <div class="payment-summary-row subtotal-row">
+      <div>Total before tax:</div>
+      <div class="payment-summary-money">$${formatCurrency(totalBeforeTax)}</div>
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Estimated tax (10%):</div>
+      <div class="payment-summary-money">$${formatCurrency(tax)}</div>
+    </div>
+
+    <div class="payment-summary-row total-row">
+      <div>Order total:</div>
+      <div class="payment-summary-money">$${formatCurrency(totalAfterTax)}</div>
+    </div>
+
+    <button class="place-order-button button-primary">
+      Place your order
+    </button>
+  `;
+  
+  document.querySelector('.js-payment-summary').innerHTML = paymentSummaryHTML;
+
+  renderCartDeletion(renderPaymentSummary);
+  renderUpdatedCart(renderPaymentSummary);
+  chooseDeliveryOption(renderPaymentSummary);
 }
 
 function deliveryOptionsHTML(matchingItem, cartItem) {
@@ -271,5 +368,6 @@ function renderUpdatedCart(onUpdateCallback) {
 }
 
 renderOrderSummary();
+renderPaymentSummary();
 
 updateHeaderQuantity();
