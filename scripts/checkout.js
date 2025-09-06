@@ -21,8 +21,8 @@ function renderOrderSummary() {
       quantity: cartItem.quantity
     };
 
-    // Solution that nests products loop inside cart loop, carries O(nxm) penalty in larger data sets
-    /*
+    /* The following is a solution that nests products loop inside cart loop, and which carries O(nxm) penalty in larger data sets:
+    
     let matchingItem; // Declared inside loop so that it resets each time and doesn't carry stale value from previous iteration whenever cartItem.id and product.id do not match
 
     products.forEach((product) => {
@@ -37,8 +37,8 @@ function renderOrderSummary() {
     });
     */
 
-    // Solution that uses .find() method to get matching item instead of nesting loops, still O(m) in the worst case
-    /*
+    /* The following is a solution that uses .find() method to get matching item instead of nesting loops, and which is still O(m) in the worst case:
+    
     const product = products.find(p => p.id === cartItem.id);
     if (!product) return;
     const matchingItem = {
@@ -175,8 +175,8 @@ function chooseDeliveryOption(onChoosingCallback) {
     });
   });
   
-  // The following comment is a different logic (kept here for future reference) that involved the class name `.js-delivery-option-${cartItem.id}` for the input element being generated in the above deliveryOptionHTML() function and a deliveryOptionId data attribute for that same radio input element, instead of the generic class name '.js-delivery-option' for the entire <div> wrapper element and the cartItemId and deliveryOptionId as data attributes for that same wrapper element
-  /*
+  /* The following is a different logic (kept here for future reference) that involved the class name `.js-delivery-option-${cartItem.id}` for the input element being generated in the above deliveryOptionHTML() function and a deliveryOptionId data attribute for that same radio input element, instead of the generic class name '.js-delivery-option' for the entire <div> wrapper element and the cartItemId and deliveryOptionId as data attributes for that same wrapper element:
+  
   cart.forEach((cartItem) => {
     const radioElements = document.querySelectorAll(`.js-delivery-option-${cartItem.id}`);
 

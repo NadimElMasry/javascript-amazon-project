@@ -3,7 +3,6 @@ export const cart = JSON.parse(localStorage.getItem('cart')) || [];
 export function modifyCart(productId, selectedQuantity) {
   if (!Number.isFinite(selectedQuantity) || selectedQuantity <= 0) return;
 
-  // Loops through cart to find matching IDs to accurately update quantity
   let matchingItem;
   cart.forEach((cartItem) => {
     if (cartItem.id === productId) {
@@ -23,8 +22,8 @@ export function modifyCart(productId, selectedQuantity) {
     saveToStorage();
   }
 
-  // Uses .find() method to get matching item instead of looping
-  /*
+  /* The following is a logic that uses the .find() method to get matching item instead of looping through the cart with .forEach():
+  
   const matchingItem = cart.find((cartItem) => {
     return cartItem.id === productId;
   });
