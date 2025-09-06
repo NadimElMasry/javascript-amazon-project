@@ -136,11 +136,12 @@ function deliveryOptionsHTML(matchingItem, cartItem) {
     const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
     
     html += `
-      <div class="delivery-option">
+      <div class="delivery-option js-delivery-option" 
+      data-delivery-option-id="${deliveryOption.id}" 
+      data-cart-item-id="${cartItem.id}">
         <input type="radio"
           ${isChecked ? 'checked' : ''}
-          class="delivery-option-input js-delivery-option-${cartItem.id}"
-          data-delivery-option-id="${deliveryOption.id}"
+          class="delivery-option-input"          
           name="delivery-option-${matchingItem.id}">
         <div>
           <div class="delivery-option-date">
@@ -158,6 +159,24 @@ function deliveryOptionsHTML(matchingItem, cartItem) {
 }
 
 function chooseDeliveryOption(onChoosingCallback) {
+  const optionElements = document.querySelectorAll('.js-delivery-option');
+
+  if (!optionElements || optionElements.length === 0) return;
+
+  optionElements.forEach((optionElement) => {
+    optionElement.addEventListener('click', () => {
+      const {deliveryOptionId, cartItemId} = optionElement.dataset;
+
+      updateDeliveryOption(cartItemId, deliveryOptionId);
+
+      if (typeof onChoosingCallback === 'function') {
+        onChoosingCallback();
+      }
+    });
+  });
+  
+  // The following comment is a different logic (kept here for future reference) that involved the class name `.js-delivery-option-${cartItem.id}` for the input element being generated in the above deliveryOptionHTML() function and a deliveryOptionId data attribute for that same radio input element, instead of the generic class name '.js-delivery-option' for the entire <div> wrapper element and the cartItemId and deliveryOptionId as data attributes for that same wrapper element
+  /*
   cart.forEach((cartItem) => {
     const radioElements = document.querySelectorAll(`.js-delivery-option-${cartItem.id}`);
 
@@ -174,7 +193,8 @@ function chooseDeliveryOption(onChoosingCallback) {
         }
       });
     });
-  });  
+  });
+  */
 }
 
 function renderCartDeletion(onDeleteCallback) {
