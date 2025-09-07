@@ -1,6 +1,7 @@
 import {cart, deleteFromCart, updateCartQuantity, updateDeliveryOption, calculateCartQuantity} from '../data/cart.js';
 import {products} from '../data/products.js';
 import {deliveryOptions} from '../data/deliveryOptions.js';
+import {calculatePaymentSummary} from './utils/payment.js';
 import {formatCurrency} from './utils/money.js';
 import {updateHeaderQuantity} from './ui/header.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
@@ -115,9 +116,9 @@ function renderOrderSummary() {
   
   document.querySelector('.js-order-summary').innerHTML = orderSummaryHTML;
 
-  // Hooks the function renderOrderSummary() into renderCartDeletion() and renderUpdatedCart() 
-  renderCartDeletion(renderOrderSummary);
-  renderUpdatedCart(renderOrderSummary);
+  // Hooks the function renderOrderSummary() into displayCartDeletion() and displayUpdatedCart() 
+  displayCartDeletion(renderOrderSummary);
+  displayUpdatedCart(renderOrderSummary);
   chooseDeliveryOption(renderOrderSummary);
 }
 
@@ -159,22 +160,7 @@ function renderPaymentSummary() {
 
   const itemQuantity = calculateCartQuantity();
 
-  let totalPriceMinusShipping = 0;
-  let totalShippingPrice = 0;
-  let totalBeforeTax = 0;
-  let tax = 0;
-  let totalAfterTax = 0;
-
-  cart.forEach((cartItem) => {
-    const matchingProduct = products.find(product => cartItem.id === product.id);
-    const matchingOption = deliveryOptions.find(option => cartItem.deliveryOptionId === option.id);
-
-    totalPriceMinusShipping += cartItem.quantity * matchingProduct.priceCents;
-    totalShippingPrice += matchingOption.priceCents;
-    totalBeforeTax = totalPriceMinusShipping + totalShippingPrice;
-    tax = totalBeforeTax * 0.1;
-    totalAfterTax = totalBeforeTax + tax;    
-  });
+  const orderPriceCents = calculatePaymentSummary();
 
   paymentSummaryHTML = `
     <div class="payment-summary-title">
@@ -183,27 +169,37 @@ function renderPaymentSummary() {
 
     <div class="payment-summary-row">
       <div>Items (${itemQuantity}):</div>
-      <div class="payment-summary-money">$${formatCurrency(totalPriceMinusShipping)}</div>
+      <div class="payment-summary-money">
+        $${formatCurrency(orderPriceCents.totalMinusShipping)}
+      </div>
     </div>
 
     <div class="payment-summary-row">
       <div>Shipping &amp; handling:</div>
-      <div class="payment-summary-money">$${formatCurrency(totalShippingPrice)}</div>
+      <div class="payment-summary-money">
+        $${formatCurrency(orderPriceCents.shippingTotal)}
+      </div>
     </div>
 
     <div class="payment-summary-row subtotal-row">
       <div>Total before tax:</div>
-      <div class="payment-summary-money">$${formatCurrency(totalBeforeTax)}</div>
+      <div class="payment-summary-money">
+        $${formatCurrency(orderPriceCents.totalBeforeTax)}
+      </div>
     </div>
 
     <div class="payment-summary-row">
       <div>Estimated tax (10%):</div>
-      <div class="payment-summary-money">$${formatCurrency(tax)}</div>
+      <div class="payment-summary-money">
+        $${formatCurrency(orderPriceCents.tax)}
+      </div>
     </div>
 
     <div class="payment-summary-row total-row">
       <div>Order total:</div>
-      <div class="payment-summary-money">$${formatCurrency(totalAfterTax)}</div>
+      <div class="payment-summary-money">
+        $${formatCurrency(orderPriceCents.totalAfterTax)}
+      </div>
     </div>
 
     <button class="place-order-button button-primary">
@@ -213,8 +209,8 @@ function renderPaymentSummary() {
   
   document.querySelector('.js-payment-summary').innerHTML = paymentSummaryHTML;
 
-  renderCartDeletion(renderPaymentSummary);
-  renderUpdatedCart(renderPaymentSummary);
+  displayCartDeletion(renderPaymentSummary);
+  displayUpdatedCart(renderPaymentSummary);
   chooseDeliveryOption(renderPaymentSummary);
 }
 
@@ -294,7 +290,7 @@ function chooseDeliveryOption(onChoosingCallback) {
   */
 }
 
-function renderCartDeletion(onDeleteCallback) {
+function displayCartDeletion(onDeleteCallback) {
   const deleteElements = document.querySelectorAll('.js-delete-element');
     
   if (deleteElements.length === 0) return;
@@ -314,7 +310,7 @@ function renderCartDeletion(onDeleteCallback) {
   });
 }
 
-function renderUpdatedCart(onUpdateCallback) {
+function displayUpdatedCart(onUpdateCallback) {
   const updateElements = document.querySelectorAll('.js-update-element');
 
   if (updateElements.length === 0) return;
