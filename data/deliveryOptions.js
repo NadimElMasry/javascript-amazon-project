@@ -15,3 +15,11 @@ export const deliveryOptions = [
     priceCents: 999
   }
 ];
+
+export function getOptionFromLookup() {
+  const deliveryOptionsById = Object.fromEntries(
+    deliveryOptions.map(o => [o.id, o])
+  );
+
+  return deliveryOptionsById;
+}

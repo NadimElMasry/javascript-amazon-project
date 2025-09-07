@@ -1,6 +1,6 @@
 import {cart} from '../../data/cart.js';
-import {products} from '../../data/products.js';
-import {deliveryOptions} from '../../data/deliveryOptions.js';
+import {getProductFromLookup} from '../../data/products.js';
+import {deliveryOptions, getOptionFromLookup} from '../../data/deliveryOptions.js';
 
 export function calculatePaymentSummary() {
   const orderPriceCents = {
@@ -11,12 +11,8 @@ export function calculatePaymentSummary() {
     totalAfterTax: 0
   };
 
-  const productsById = Object.fromEntries(
-    products.map(p => [p.id, p])
-  );
-  const deliveryOptionsById = Object.fromEntries(
-    deliveryOptions.map(o => [o.id, o])
-  );
+  const productsById = getProductFromLookup();
+  const deliveryOptionsById = getOptionFromLookup();
 
   cart.forEach((cartItem) => {
     const matchingProduct = productsById[cartItem.id];

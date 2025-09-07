@@ -658,3 +658,11 @@ export const products = [
     ]
   }
 ];
+
+export function getProductFromLookup() {
+  const productsById = Object.fromEntries(
+    products.map(p => [p.id, p])
+  );
+
+  return productsById;
+}
