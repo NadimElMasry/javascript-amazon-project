@@ -11,9 +11,16 @@ export function calculatePaymentSummary() {
     totalAfterTax: 0
   };
 
+  const productsById = Object.fromEntries(
+    products.map(p => [p.id, p])
+  );
+  const deliveryOptionsById = Object.fromEntries(
+    deliveryOptions.map(o => [o.id, o])
+  );
+
   cart.forEach((cartItem) => {
-    const matchingProduct = products.find(product => cartItem.id === product.id);
-    const matchingOption = deliveryOptions.find(option => cartItem.deliveryOptionId === option.id);
+    const matchingProduct = productsById[cartItem.id];
+    const matchingOption = deliveryOptionsById[cartItem.deliveryOptionId] || deliveryOptions[0];
 
     orderPriceCents.totalMinusShipping += cartItem.quantity * matchingProduct.priceCents;
     orderPriceCents.shippingTotal += matchingOption.priceCents;    
