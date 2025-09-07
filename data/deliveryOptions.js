@@ -16,10 +16,10 @@ export const deliveryOptions = [
   }
 ];
 
-export function getOptionFromLookup() {
-  const deliveryOptionsById = Object.fromEntries(
-    deliveryOptions.map(o => [o.id, o])
-  );
+// Lookup table (object) created from an array of ID-value pairs by using map() method on products array above, used to get product that matches cart item, and defined here in global scope to run on module load instead of looping with .map() inside other loops in files which import this object
+export const deliveryOptionsById = Object.fromEntries(
+  deliveryOptions.map(o => [o.id, o])
+);
 
-  return deliveryOptionsById;
-}
+// Gets delivery option with priceCents value of 0, to avoid having to use index number [0] that may be corrupted with invalid data; also defined here in global scope (like the above lookup object) to avoid looping inside other loops
+export const defaultDeliveryOption = deliveryOptions.find(o => o.priceCents === 0);

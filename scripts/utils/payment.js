@@ -1,6 +1,6 @@
 import {cart} from '../../data/cart.js';
-import {getProductFromLookup} from '../../data/products.js';
-import {deliveryOptions, getOptionFromLookup} from '../../data/deliveryOptions.js';
+import {productsById} from '../../data/products.js';
+import {deliveryOptionsById, defaultDeliveryOption} from '../../data/deliveryOptions.js';
 
 export function calculatePaymentSummary() {
   const orderPriceCents = {
@@ -11,12 +11,9 @@ export function calculatePaymentSummary() {
     totalAfterTax: 0
   };
 
-  const productsById = getProductFromLookup();
-  const deliveryOptionsById = getOptionFromLookup();
-
   cart.forEach((cartItem) => {
     const matchingProduct = productsById[cartItem.id];
-    const matchingOption = deliveryOptionsById[cartItem.deliveryOptionId] || deliveryOptions[0];
+    const matchingOption = deliveryOptionsById[cartItem.deliveryOptionId] || defaultDeliveryOption;
 
     orderPriceCents.totalMinusShipping += cartItem.quantity * matchingProduct.priceCents;
     orderPriceCents.shippingTotal += matchingOption.priceCents;    

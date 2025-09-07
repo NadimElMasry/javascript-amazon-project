@@ -1,6 +1,6 @@
 import {cart, deleteFromCart, updateCartQuantity, updateDeliveryOption, calculateCartQuantity} from '../data/cart.js';
-import {products, getProductFromLookup} from '../data/products.js';
-import {deliveryOptions, getOptionFromLookup} from '../data/deliveryOptions.js';
+import {productsById} from '../data/products.js';
+import {deliveryOptions, deliveryOptionsById, defaultDeliveryOption} from '../data/deliveryOptions.js';
 import {calculatePaymentSummary} from './utils/payment.js';
 import {formatCurrency} from './utils/money.js';
 import {updateHeaderQuantity} from './ui/header.js';
@@ -9,12 +9,8 @@ import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 function renderOrderSummary() {
   let orderSummaryHTML = '';
 
-  // getProductFromLookup() and getOptionFromLookup() each returns a lookup table (object) from an array of ID-product pairs as a result from using the .map() method on the products and deliveryOptions arrays, respectively, and it is important to call those two function here before looping through the cart array (as done right below) to avoid looping inside another loop and carrying an O(nxm) penalty
-  const productsById = getProductFromLookup();
-  const deliveryOptionsById = getOptionFromLookup();
-
   cart.forEach((cartItem) => {
-    // Gets matching item from lookup object created above (outside of the cart loop) instead of looping through products array
+    // productsById() is an imported lookup table (object) created from an array of ID-product pairs by using the .map() method on the products array on products.js
     const product = productsById[cartItem.id];
     const matchingItem = {
       ...product,
@@ -47,7 +43,8 @@ function renderOrderSummary() {
     };
     */
 
-    const deliveryOption = deliveryOptionsById[cartItem.deliveryOptionId] || deliveryOptions[0];
+    // deliveryOptionsById() is an imported lookup table (object) created from an array of ID-product pairs by using the .map() method on the deliveryOptions array on deliveryOptions.js
+    const deliveryOption = deliveryOptionsById[cartItem.deliveryOptionId] || defaultDeliveryOption;
     const today = dayjs();
     const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
     const dateString = deliveryDate.format('dddd, MMMM D');
