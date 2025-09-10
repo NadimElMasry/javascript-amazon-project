@@ -81,11 +81,26 @@ function addToCart() {
   })
 }
 
+// Timeout registry object declared globally to manage timeouts for the displayAddedMessage() function below, by storing timeout IDs as values corresponding with their own productId keys
+const messageTimeouts = {};
+
 function displayAddedMessage(productId) {
   const addedMessage = document.querySelector(`.js-added-message-${productId}`);
+
   addedMessage.classList.add('added-message-visible');
-  setTimeout(() => {
+  
+  // When the button corresponding to the productId is clicked for the first time, the IF condition below looks for the productId property key inside the messageTimeouts object and doesn't find it, therefore skipping the clearTimeout code inside the IF statement, and then goes on to define "messageTimeouts[productId] = ..." with a new timeout numeric ID as a value (e.g. ID = 401) which corresponds to "setTimeout(() => {...}, 2000)", setting a timer to 2 seconds in the process.
+  // Upon clicking a second time before 2 seconds have passed, the 401 callback code inside "setTimeout(() => {...}, 2000)" hasn't run yet by then, but this time the IF condition does indeed find the productId property key, and so the clearTimeout code runs (clearing the old 401 timer) and the code inside the setTimeout callback never runs, but rather resets, setting a new timer to 2 seconds with a new timer ID (e.g. 402) stored inside messageTimeouts[productId].
+  // If we click a third time afterwards, but this time after 2 seconds have passed, the 402 timer has already fired by then, which means that the code inside the setTimeout callback would have finished running, clearing the 402 timer automatically from the browser's timer table and triggering the .remove() inside the callback.
+  // The line of code "delete messageTimeouts[productId]" inside the setTimeout callback additionally ensures that the stale key-value pair {productId: 402} is also removed from the messageTimeouts object, although this is optional because the leftover timeout ID is harmless in small projects and silently does nothing upon clicking again.
+  // Any fourth click would be like clicking for the first time.
+  if (messageTimeouts[productId]) {
+    clearTimeout(messageTimeouts[productId]);
+  }
+  
+  messageTimeouts[productId] = setTimeout(() => {
     addedMessage.classList.remove('added-message-visible');
+    delete messageTimeouts[productId];
   }, 2000);
 }
 
