@@ -103,7 +103,7 @@ function renderOrderSummary() {
             <div class="delivery-options-title">
               Choose a delivery option:
             </div>
-            ${deliveryOptionsHTML(matchingItem, cartItem)}
+            ${deliveryOptionsHTML(cartItem)}
           </div>
         </div>
       </div>
@@ -112,7 +112,7 @@ function renderOrderSummary() {
   
   document.querySelector('.js-order-summary').innerHTML = orderSummaryHTML;
 
-  // Hooks the function renderOrderSummary() into displayCartDeletion() and displayUpdatedCart() 
+  // Hooks renderOrderSummary() as callback into displayCartDeletion(), displayUpdatedCart() and chooseDeliveryOption() 
   displayCartDeletion(renderOrderSummary);
   displayUpdatedCart(renderOrderSummary);
   chooseDeliveryOption(renderOrderSummary);
@@ -210,7 +210,7 @@ function renderPaymentSummary() {
   chooseDeliveryOption(renderPaymentSummary);
 }
 
-function deliveryOptionsHTML(matchingItem, cartItem) {
+function deliveryOptionsHTML(cartItem) {
   let html = '';
 
   deliveryOptions.forEach((deliveryOption) => {
@@ -231,7 +231,7 @@ function deliveryOptionsHTML(matchingItem, cartItem) {
         <input type="radio"
           ${isChecked ? 'checked' : ''}
           class="delivery-option-input"          
-          name="delivery-option-${matchingItem.id}">
+          name="delivery-option-${cartItem.id}">
         <div>
           <div class="delivery-option-date">
             ${dateString}
