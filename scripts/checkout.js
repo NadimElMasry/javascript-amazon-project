@@ -4,7 +4,7 @@ import {deliveryOptions, deliveryOptionsById, defaultDeliveryOption} from '../da
 import {calculatePaymentSummary} from './utils/payment.js';
 import {formatCurrency} from './utils/money.js';
 import {updateHeaderQuantity} from './ui/header.js';
-import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
+import {calculateDeliveryDate} from './utils/deliveryDate.js';
 
 function renderOrderSummary() {
   let orderSummaryHTML = '';
@@ -45,8 +45,7 @@ function renderOrderSummary() {
 
     // deliveryOptionsById() is an imported lookup table (object) created from an array of ID-product pairs by using the .map() method on the deliveryOptions array on deliveryOptions.js
     const deliveryOption = deliveryOptionsById[cartItem.deliveryOptionId] || defaultDeliveryOption;
-    const today = dayjs();
-    const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+    const deliveryDate = calculateDeliveryDate(deliveryOption);
     const dateString = deliveryDate.format('dddd, MMMM D');
 
     orderSummaryHTML += `
@@ -214,8 +213,7 @@ function deliveryOptionsHTML(cartItem) {
   let html = '';
 
   deliveryOptions.forEach((deliveryOption) => {
-    const today = dayjs();
-    const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+    const deliveryDate = calculateDeliveryDate(deliveryOption);
     const dateString = deliveryDate.format('dddd, MMMM D');
 
     const priceString = deliveryOption.priceCents === 0 
